@@ -1,26 +1,13 @@
-using System;
 using Lib;
-using Lib.Bases;
-using Lib.Effects;
-using Lib.Interfaces;
+using Lib.Base;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    enum SpellBase
-    {
-        Projectile,
-        Block
-    }
-    [SerializeField] private SpellBase spellBase;
-    
-    enum SpellEffect
-    {
-        Fire,
-        Ice,
-        Earth
-    }
-    [SerializeField] private SpellEffect spellEffect;
+    [SerializeField] private string spellName;
+    [SerializeField] private SpellBuilder.SpellBases spellBase;
+    [SerializeField] private Spell.Elements spellElement;
+    [SerializeField] private Spell.Effects spellEffect;
     
     void OnFire()
     {
@@ -29,22 +16,13 @@ public class PlayerController : MonoBehaviour
 
     void CastSpell()
     {
-        ISpellBase @base = spellBase switch
-        {
-            SpellBase.Projectile => new ProjectileBase(),
-            SpellBase.Block => new BlockBase(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        var spell = new SpellBuilder()
+            .AddName(spellName)
+            .WithBase(spellBase)
+            .AddElement(spellElement)
+            .AddEffect(spellEffect)
+            .Build();
         
-        ISpellEffect effect = spellEffect switch
-        {
-            SpellEffect.Fire => new FireEffect(),
-            SpellEffect.Ice => new IceEffect(),
-            SpellEffect.Earth => new EarthEffect(),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        var spell = new Spell(this.gameObject.transform, @base, effect);
         spell.Cast();
     }
 }

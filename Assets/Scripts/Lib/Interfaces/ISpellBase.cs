@@ -4,6 +4,6 @@ namespace Lib.Interfaces
 {
     public interface ISpellBase
     {
-        GameObject Create(Transform playerTransform);
+        GameObject CreateSpell();
     }
 }
